@@ -1,0 +1,9 @@
+EasyUC Git Commit 97be532217a1ad4d9d1f010a9323b675a915072d
+PASS EasyCrypt: weighted inclusion-exclusion, strict intersection bound, honest overlap, certificate uniqueness
+PASS EasyCrypt: single honest precommit, authenticated delivery, certified decisions, same-round agreement, replay idempotence
+PASS EasyUC: type and unit checking
+PASS EasyUC: all 52 interpreter assertions
+  Voters: weights (3,2,2,2); Byzantine voter 3; quorum weight > 6.
+  Honest node 1: weight 3 before and after a replay; weight 5 is insufficient; weight 7 enables Decide(1,42).
+  Honest nodes 0 and 2 also emit Decide for block 42 (certificate weights 9 and 7).
+  Byzantine equivocation is accepted under its own identity; unpublished delivery and repeat honest precommit are rejected.

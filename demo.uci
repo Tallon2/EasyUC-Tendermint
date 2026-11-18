@@ -1,0 +1,176 @@
+load TendermintRound.
+functionality TendermintRound.Round.
+prover [""].
+hint / SingleRound.round_eval.
+var client : port.
+assumption client_env : envport func client.
+real.
+send client@TendermintRound.RoundIO.D.start([0;1;2;3],[(0,3);(1,2);(2,2);(3,2)],[3],0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.ready@((adv,2)) ctrl_adv.
+
+(* An activation cannot substitute a different block for the honest leader's input. *)
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,0,0,0,99)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(false)@((adv,2)) ctrl_adv.
+
+(* Publish proposal 42. Reject an unpublished honest precommit and early decision. *)
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,0,0,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(false)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(2,0,0,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(false)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,0,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,0,0,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,1,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,1,0,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,2,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,2,0,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+
+(* Each honest inbox independently gathers weight seven in prevotes. *)
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,2,0,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,0,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,1,0,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,0,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,2,1,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,1,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,1,1,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,1,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,2,2,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,2,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,1,2,1,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,2,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,0,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(false)@((adv,2)) ctrl_adv.
+
+(* Byzantine validator 3 may publish different precommits with its own identity. *)
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,3,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(0,3,0,2,99)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,3,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,3,1,2,99)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.inspect(1,2,99)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.observed(2)@((adv,2)) ctrl_adv.
+
+(* A replay at node 1 leaves the precommit weight at three. Weight five is below quorum. *)
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,1,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.inspect(1,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.observed(3)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,1,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.inspect(1,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.observed(3)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,1,1,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.inspect(1,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.observed(5)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(2,1,0,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(false)@((adv,2)) ctrl_adv.
+
+(* Every honest node decides block 42 after receiving a local certificate of weight at least seven. *)
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,2,1,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.inspect(1,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.observed(7)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(2,1,0,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.RoundIO.D.decide(1,42)@client ctrl_env.
+send env_root_port@_@adv_root_port.
+run.
+assert msg_out env_root_port@_@adv_root_port ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(2,1,0,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(false)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,2,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,1,0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.inspect(0,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.observed(9)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(2,0,0,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.RoundIO.D.decide(0,42)@client ctrl_env.
+send env_root_port@_@adv_root_port.
+run.
+assert msg_out env_root_port@_@adv_root_port ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,2,2,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,0,2,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(1,1,2,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.status(true)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.inspect(2,2,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.Scheduler.A.observed(7)@((adv,2)) ctrl_adv.
+send ((adv,2))@TendermintRound.Scheduler.A.action(2,2,0,0,42)$func.
+run.
+assert msg_out ((func,1))@TendermintRound.RoundIO.D.decide(2,42)@client ctrl_env.
+finish.
